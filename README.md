@@ -1,6 +1,6 @@
 # Data analysis
 - Document here the project: market_sentiment
-- Description: Project Description
+- Description: Sentiment analsisy for tweets.
 - Data Source:
 - Type of analysis:
 
