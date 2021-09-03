@@ -150,10 +150,10 @@ def custom_ohe(df):
     df['ge_ticker'] = df['symbols'].apply(tickerge)
     df['btc_ticker'] = df['symbols'].apply(tickerbtc)
 
-    df['#intc_ticker'] = df['hashtags'].apply(hashtag_intc)
-    df['#bynd_ticker'] = df['hashtags'].apply(hashtag_bynd)
-    df['#ge_ticker'] = df['hashtags'].apply(hashtag_ge)
-    df['#btc_ticker'] = df['hashtags'].apply(hashtag_btc)
+    # df['#intc_ticker'] = df['hashtags'].apply(hashtag_intc)
+    # df['#bynd_ticker'] = df['hashtags'].apply(hashtag_bynd)
+    # df['#ge_ticker'] = df['hashtags'].apply(hashtag_ge)
+    # df['#btc_ticker'] = df['hashtags'].apply(hashtag_btc)
     return df
 
 # """
@@ -166,10 +166,10 @@ def impute(df):
     df['ge_ticker'].fillna(0.,inplace=True)
     df['btc_ticker'].fillna(0.,inplace=True)
 
-    df['#intc_ticker'].fillna(0.,inplace=True)
-    df['#bynd_ticker'].fillna(0.,inplace=True)
-    df['#ge_ticker'].fillna(0.,inplace=True)
-    df['#btc_ticker'].fillna(0.,inplace=True)
+    # df['#intc_ticker'].fillna(0.,inplace=True)
+    # df['#bynd_ticker'].fillna(0.,inplace=True)
+    # df['#ge_ticker'].fillna(0.,inplace=True)
+    # df['#btc_ticker'].fillna(0.,inplace=True)
     return df
 # """
 # remove nans from ticker colums
@@ -329,11 +329,11 @@ def convert_tickers(INTCclose,BYNDclose, GEclose, BTCclose):
 """
 Merge ticker feature selected aggredated dataframe with target target dataframe created
 """
-def merge_ticker_with_target_dataframe(df_INTC, df_GE, df_BYND, df_BTC,  intc_target_df, bynd_target_df, ge_target_df, btc_target_df):
+def merge_ticker_with_target_dataframe(df_INTC, df_BYND, df_GE, df_BTC, intc_target_df, bynd_target_df, ge_target_df, btc_target_df):
     INTC_df = pd.merge(df_INTC, intc_target_df,left_index=True,right_index=True)
-    BYND_df = pd.merge(df_GE,bynd_target_df,left_index=True,right_index=True)
-    GE_df = pd.merge(df_BYND,ge_target_df,left_index=True,right_index=True)
-    BTC_df = pd.merge(df_BTC,btc_target_df,left_index=True,right_index=True)
+    BYND_df = pd.merge(df_BYND, bynd_target_df,left_index=True,right_index=True)
+    GE_df = pd.merge(df_GE, ge_target_df,left_index=True,right_index=True)
+    BTC_df = pd.merge(df_BTC, btc_target_df,left_index=True,right_index=True)
 
     return INTC_df, BYND_df, GE_df, BTC_df
 
@@ -361,25 +361,29 @@ if __name__ == '__main__':
     # print('symbols_hit==========================', df.shape)
     # df = hashtag_hit(df, ticker='BYND')
     # print('hashtag_hit==========================', df.shape)
+    df = df_to_datetime(df)
+
     df_INTC = average_symbols_of_tweets_per_day(df, ticker='INTC')
-    df_GE= average_symbols_of_tweets_per_day(df, ticker='GE')
     df_BYND= average_symbols_of_tweets_per_day(df, ticker='BYND')
+    df_GE= average_symbols_of_tweets_per_day(df, ticker='GE')
     df_BTC = average_symbols_of_tweets_per_day(df, ticker='BTC')
 
     print('average_symbols==========================', df.shape)
     # print(df.columns)
     # df = average_hashtag_of_tweets_per_day(df, ticker='BYND')
     # print('average_hashtag==========================', df.shape)
-    df = df_to_datetime(df)
 
     INTCclose, BYNDclose, GEclose, BTCclose = download_yahoo_stocks(tickers= 'INTC BYND GE BTC')
-    intc_target_df, bynd_target_df, ge_target_df, btc_target_df = convert_tickers(INTCclose,BYNDclose, GEclose, BTCclose)
+    intc_target_df, bynd_target_df, ge_target_df, btc_target_df = convert_tickers(INTCclose, BYNDclose, GEclose, BTCclose)
     INTC_df, BYND_df, GE_df, BTC_df = merge_ticker_with_target_dataframe(
-                                        df_INTC, df_GE, df_BYND, df_BTC,
+                                        df_INTC, df_BYND, df_GE, df_BTC,
                                         intc_target_df, bynd_target_df, ge_target_df, btc_target_df)
-    print('merge_tickers_with_target_data ==================' , BYND_df.shape )
-    print('merge_tickers_with_target_data ==================' , INTC_df.shape)
-    print('merge_tickers_with_target_data ==================' , GE_df.shape)
-    print('merge_tickers_with_target_data ==================' , BTC_df.shape)
 
-    # print(df)
+    # print('merge_tickers_with_target_data ==================' , BYND_df.shape )
+    # print('merge_tickers_with_target_data ==================' , INTC_df.shape)
+    # print('merge_tickers_with_target_data ==================' , GE_df.shape)
+    # print('merge_tickers_with_target_data ==================' , BTC_df.shape)
+    print(INTC_df)
+    print(BYND_df)
+    print(GE_df)
+    print(BTC_df)
