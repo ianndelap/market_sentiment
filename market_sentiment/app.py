@@ -6,7 +6,7 @@ from numpy.lib.ufunclike import fix
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
-import seaborn as sns
+# import seaborn as sns
 import tensorflow_hub as hub
 import numpy as np
 import tensorflow_text
@@ -336,27 +336,25 @@ def merge_ticker_with_target_dataframe(df_INTC, df_BYND, df_GE, df_BTC, intc_tar
     BTC_df = pd.merge(df_BTC, btc_target_df,left_index=True,right_index=True)
 
     return INTC_df, BYND_df, GE_df, BTC_df
-
-
-if __name__ == '__main__':
+def grab_stocks(df):
     df = get_data()
     df = grab_features(df)
-    print('grab_features==========================', df.shape)
+    # print('grab_features==========================', df.shape)
     df = clean_data(df)
-    print('clean_data==========================', df.shape)
+    # print('clean_data==========================', df.shape)
     df = custom_ohe(df)
-    print('custom_ohe==========================', df.shape)
+    # print('custom_ohe==========================', df.shape)
     df = impute(df)
-    print('impute==========================', df.shape)
+    # print('impute==========================', df.shape)
     # df = remove_na(df)
     df = fix_date_time(df)
-    print('fix_date_time==========================', df.shape)
+    # print('fix_date_time==========================', df.shape)
     df = drop_columns(df)
-    print('drop_columns==========================', df.shape)
+    # print('drop_columns==========================', df.shape)
     df = remove_url(df)
-    print('remove_url==========================', df.shape)
+    # print('remove_url==========================', df.shape)
     df = concat_vectors(df)
-    print('concat_vectors==========================', df.shape)
+    # print('concat_vectors==========================', df.shape)
     # df = symbols_hit(df, ticker='BYND')
     # print('symbols_hit==========================', df.shape)
     # df = hashtag_hit(df, ticker='BYND')
@@ -368,7 +366,7 @@ if __name__ == '__main__':
     df_GE= average_symbols_of_tweets_per_day(df, ticker='GE')
     df_BTC = average_symbols_of_tweets_per_day(df, ticker='BTC')
 
-    print('average_symbols==========================', df.shape)
+    # print('average_symbols==========================', df.shape)
     # print(df.columns)
     # df = average_hashtag_of_tweets_per_day(df, ticker='BYND')
     # print('average_hashtag==========================', df.shape)
@@ -378,12 +376,9 @@ if __name__ == '__main__':
     INTC_df, BYND_df, GE_df, BTC_df = merge_ticker_with_target_dataframe(
                                         df_INTC, df_BYND, df_GE, df_BTC,
                                         intc_target_df, bynd_target_df, ge_target_df, btc_target_df)
-
-    # print('merge_tickers_with_target_data ==================' , BYND_df.shape )
-    # print('merge_tickers_with_target_data ==================' , INTC_df.shape)
-    # print('merge_tickers_with_target_data ==================' , GE_df.shape)
-    # print('merge_tickers_with_target_data ==================' , BTC_df.shape)
-    print(INTC_df)
-    print(BYND_df)
-    print(GE_df)
-    print(BTC_df)
+    # print(plt.plot(GEclose))
+    # print(plt.plot(GE_df['GE']))
+    return GEclose
+if __name__ == '__main__':
+    df = get_data()
+    grab_stocks(df)
