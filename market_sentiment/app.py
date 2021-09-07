@@ -217,6 +217,8 @@ def embed_matrix(df):
     vector_df = pd.DataFrame(text_result.numpy())
     return vector_df
 
+
+
 """
 concat the two dataframes one against another to create one single dataframe
 """
@@ -300,13 +302,15 @@ def df_to_datetime(df):
 """ Import target Dataframe
     Convert tickers to 1 and 0 as target output series
     """
-def download_yahoo_stocks(tickers= 'INTC BYND GE BTC'):
-    tickers = yf.download(tickers = tickers, interval='1d',start="2018-01-01", end="2021-08-01")
+def download_yahoo_stocks(tickers= 'INTC BYND GE BTC', period = "6mo"):
+    tickers = yf.download(tickers = tickers, interval='1d',period = period)
 
     INTCclose = tickers['Close']['INTC']
     BYNDclose = tickers['Close']['BYND']
     GEclose = tickers['Close']['GE']
     BTCclose = tickers['Close']['BTC']
+
+    # return {"BTC": BTCclose, "BYND": BYNDclose,
 
     return INTCclose, BYNDclose, GEclose, BTCclose
 
@@ -371,7 +375,7 @@ def grab_stocks(df):
     # df = average_hashtag_of_tweets_per_day(df, ticker='BYND')
     # print('average_hashtag==========================', df.shape)
 
-    INTCclose, BYNDclose, GEclose, BTCclose = download_yahoo_stocks(tickers= 'INTC BYND GE BTC')
+    INTCclose, BYNDclose, GEclose, BTCclose = download_yahoo_stocks(tickers= 'INTC BYND GE BTC', period='6mo')
     intc_target_df, bynd_target_df, ge_target_df, btc_target_df = convert_tickers(INTCclose, BYNDclose, GEclose, BTCclose)
     INTC_df, BYND_df, GE_df, BTC_df = merge_ticker_with_target_dataframe(
                                         df_INTC, df_BYND, df_GE, df_BTC,
