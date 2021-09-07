@@ -4,42 +4,43 @@ import pandas as pd
 from datetime import datetime
 import requests
 import yfinance as yf
+import plotly.express as px
+from datetime import datetime
 
-tickers = yf.download(tickers = 'INTC BYND GE BTC', interval='1d',start="2018-01-01", end="2021-08-01")
-# market_url = "http://0.0.0.0:8000/"
-
-# response = requests.get(
-#     market_url
-# ).json()
-
-# # st.write(response)
-# st.title(response["greeting"])
+# Some notes:
+# 1.) market_url is our backend link that is being connected to uvcorn at the moment, using --reload it'll update changes
+# that are made in the api/fast.py. then response is grabbing this to be displayed. We call our respone[key] to output
+# the value.
+# tickers = yf.download(tickers = 'INTC BYND GE BTC', interval='1d', )
+market_url = "http://0.0.0.0:8001/deploy-stocks"
 
 
 st.title('Market Analysis Based Off Twitter Sentiment')
 
-# load the data frame
-df = pd.DataFrame({
-  'ticker option': ['$GE', '$BYND', '$INTC', '$BTC']
-})
-# load the line chart
-chart_data = pd.DataFrame(
-     np.random.randn(20, 1),
-     columns=['$GE'])
-st.line_chart(chart_data)
-
-
+# the side bar that allows us to choose the tickers and essentially acts as params
 option = st.sidebar.selectbox(
     'Choose a $Ticker',
-     df['ticker option'])
-'You selected:', option
+     ['GE', 'BYND', 'INTC', 'BTC'])
 
-start_time = st.slider(
-    "When do you start?",
-     value=datetime(2021, 5, 2),
-     format="MM/DD/YY")
-st.write("Dates", start_time)
+time_stamps = st.sidebar.selectbox(
+    'Choose a time',
+     ['1d', '3mo', '6mo', '1y'])
 
+# our response to read our api
+response = requests.get(
+    market_url,
+    params={"ticker": option, 'period': time_stamps}
+).json()
+
+# load our dataframe
+df = pd.DataFrame({'Date': response['tickers'].keys(),'Price': response['tickers'].values()})
+# the metrics
 score, analysis = st.columns(2)
-score.metric("Stock Price", "$125", "$2.45")
+
+score.metric("Stock Price",  df['Price'].iloc[-1], df['Price'].iloc[-2] - df['Price'].iloc[-1])
 analysis.metric("Sentiment", "Bullish", "+23%")
+
+
+# load the line chart
+plotly_figure = px.line(df, x=df['Date'], y=df['Price'], title=f'You Selected ${option}')
+st.plotly_chart(plotly_figure)
