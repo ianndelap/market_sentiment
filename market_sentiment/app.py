@@ -474,18 +474,31 @@ def grab_stocks(df):
     # print(df.columns)
     # df = average_hashtag_of_tweets_per_day(df, ticker='BYND')
     # print('average_hashtag==========================', df.shape)
+    df_INTC = df_INTC.set_index(['created_at'])
+
+    df_BYND = df_BYND.set_index(['created_at'])
+
+    df_GE = df_GE.set_index(['created_at'])
+
+    df_BTC = df_BTC.set_index(['created_at'])
+
 
     INTCclose, BYNDclose, GEclose, BTCclose = download_yahoo_stocks(tickers= 'INTC BYND GE BTC', period='6mo')
     intc_target_df, bynd_target_df, ge_target_df, btc_target_df = convert_tickers(INTCclose, BYNDclose, GEclose, BTCclose)
     INTC_df, BYND_df, GE_df, BTC_df = merge_ticker_with_target_dataframe(
                                         df_INTC, df_BYND, df_GE, df_BTC,
                                         intc_target_df, bynd_target_df, ge_target_df, btc_target_df)
+
+    return INTC_df, BYND_df, GE_df, BTC_df
     # print(INTC_df)
     # print(BYND_df)
     # print(GE_df)
     # print(BTC_df)
 if __name__ == '__main__':
     # df = dftest
-    # grab_stocks(df)
     our_live_df = get_live_tweets()
-    ourlive_df = grab_live_tweets_to_vectorize(our_live_df)
+    INTC_df, BYND_df, GE_df, BTC_df = grab_live_tweets_to_vectorize(our_live_df)
+    INTC_df.to_csv(index=True, path_or_buf='X_pred_INTC.csv')
+    BYND_df.to_csv(index=True,path_or_buf='X_pred_BYND.csv')
+    GE_df.to_csv(index=True,path_or_buf='X_pred_GE.csv')
+    BTC_df.to_csv(index=True,path_or_buf='X_pred_BTC.csv')

@@ -28,12 +28,12 @@ def index():
 
 @app.get("/deploy-stocks")
 def get_stocks(ticker='GE', period = '6mo'):
-    period = {
-        '1day': '1d',
-        '3months': '3mo',
-        '6months': '6mo',
-        '1year': '1y'
-    }
+    # period = {
+    #     '1day': '1d',
+    #     '3months': '3mo',
+    #     '6months': '6mo',
+    #     '1year': '1y'
+    # }
     name = {
         "bitcoin": 'BTC',
         "intel": 'INTC',
