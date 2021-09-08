@@ -2,6 +2,7 @@
 canonical imports here
 """
 
+from market_sentiment.gcp import get_data_from_gcp
 from numpy.lib.ufunclike import fix
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -15,11 +16,13 @@ import re
 import yfinance as yf
 
 # GCP = URL replace with mine
-"""Import Data
-    Note in the packages we eventually don't limit the rows to 1000 we'll need to change this to a google cloud URL due to data being massive"""
-def get_data(nrows=5000):
-    dftest = pd.read_json('/Users/munjikahalah/code/market_sentiment/raw_data/dump.json',lines=True, nrows=nrows)
-    return dftest
+# """Import Data
+#     Note in the packages we eventually don't limit the rows to 1000 we'll need to change this to a google cloud URL due to data being massive"""
+# def get_data(nrows=5000):
+#     dftest = pd.read_json('/Users/munjikahalah/code/market_sentiment/raw_data/dump.json',lines=True, nrows=nrows)
+#     return dftest
+
+dftest = get_data_from_gcp(nrows=1000, optimize=False, lines=True)
 
 # let's choose only the features we need
 def grab_features(dftest):
@@ -341,7 +344,7 @@ def merge_ticker_with_target_dataframe(df_INTC, df_BYND, df_GE, df_BTC, intc_tar
 
     return INTC_df, BYND_df, GE_df, BTC_df
 def grab_stocks(df):
-    df = get_data()
+    df = dftest
     df = grab_features(df)
     # print('grab_features==========================', df.shape)
     df = clean_data(df)
@@ -380,9 +383,10 @@ def grab_stocks(df):
     INTC_df, BYND_df, GE_df, BTC_df = merge_ticker_with_target_dataframe(
                                         df_INTC, df_BYND, df_GE, df_BTC,
                                         intc_target_df, bynd_target_df, ge_target_df, btc_target_df)
-    # print(plt.plot(GEclose))
-    # print(plt.plot(GE_df['GE']))
-    return GEclose
+    print(INTC_df)
+    print(BYND_df)
+    print(GE_df)
+    print(BTC_df)
 if __name__ == '__main__':
-    df = get_data()
+    df = dftest
     grab_stocks(df)
