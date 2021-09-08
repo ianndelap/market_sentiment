@@ -51,11 +51,19 @@ response = requests.get(
 # load our dataframe
 df = pd.DataFrame({'Date': response['tickers'].keys(),'Price': response['tickers'].values()})
 # the metrics
-st.metric("Sentiment", option, "+23%")
+st.metric("Sentiment", 'Bullish', "+23%")
 # st.write(response)
 
 # load the line chart
 plotly_figure = px.line(df, x=df['Date'], y=df['Price'], title=f'You Selected ${option}')
 st.plotly_chart(plotly_figure)
 # the metrics
-st.metric("Stock Price",  df['Price'].iloc[-1], df['Price'].iloc[-2] - df['Price'].iloc[-1])
+st.metric("Stock Price",  df['Price'].iloc[-1], df['Price'].iloc[-1] - df['Price'].iloc[-2])
+# if df['Price'].iloc[-2] - df['Price'].iloc[-1]< 0:
+#     st.write('RED')
+# else:
+#     st.write('GREEN')
+# st.write( df['Price'].iloc[-2] - df['Price'].iloc[-1])
+
+# st.write(df['Price'].iloc[-2])
+# st.write(df['Price'].iloc[-1])

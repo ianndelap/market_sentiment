@@ -4,6 +4,7 @@ canonical imports here
 
 from market_sentiment.gcp import get_data_from_gcp
 from numpy.lib.ufunclike import fix
+from market_sentiment import auth
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
@@ -23,6 +24,7 @@ import yfinance as yf
 #     return dftest
 
 dftest = get_data_from_gcp(nrows=1000, optimize=False, lines=True)
+# dftest = get_live_tweets()
 
 # let's choose only the features we need
 def grab_features(dftest):
@@ -52,13 +54,13 @@ def clean_data(df):
     df['full_text'] = df['full_text'].apply(replacern)
     return df
 
-"""
-Categorize the symbol and hashtag mentions for the four main culprits of this project:
-- Intel (intc)
-- Beyond Meat (bynd)
-- General Electric (ge)
-- Bitcoin (btc)
-"""
+# """
+# Categorize the symbol and hashtag mentions for the four main culprits of this project:
+# - Intel (intc)
+# - Beyond Meat (bynd)
+# - General Electric (ge)
+# - Bitcoin (btc)
+# """
 # Intel
 def tickerintc(x):
     if type(x) == list:
@@ -162,6 +164,11 @@ def custom_ohe(df):
 # """
 # fill nan values with zeros in our new columns
 # """
+def remove_dollar(l):
+    new_list = []
+    for item in l:
+        new_list.append(item.replace('$',''))
+    return new_list
 
 def impute(df):
     df['intc_ticker'].fillna(0.,inplace=True)
@@ -186,6 +193,8 @@ def impute(df):
 fix date time set to day without specific times
 """
 def fix_date_time(df):
+    if df['created_at'].dtype == 'object':
+        df['created_at'] = pd.to_datetime(df['created_at'])
     df['created_at'] = df['created_at'].dt.date
     return df
 
@@ -267,17 +276,21 @@ select the dataframes for when the hashtag tickers have a hit
 
 def average_symbols_of_tweets_per_day(df, ticker=''):
     if ticker =='INTC':
-        intc_ticker_mean_df = symbols_hit(df, 'INTC').groupby('created_at').mean()
+        intc_ticker_mean_df = symbols_hit(df, 'INTC').groupby('created_at').mean().reset_index()
+        print(f'INTC TICKER MEAN DF SHAPE =========== {intc_ticker_mean_df.shape}')
         return intc_ticker_mean_df
     elif ticker == 'BYND':
-        bynd_ticker_mean_df = symbols_hit(df, 'BYND').groupby('created_at').mean()
+        bynd_ticker_mean_df = symbols_hit(df, 'BYND').groupby('created_at').mean().reset_index()
+        print(f'BYND TICKER MEAN DF SHAPE =========== {bynd_ticker_mean_df.shape}')
         return bynd_ticker_mean_df
     elif ticker == 'GE':
-        ge_ticker_mean_df = symbols_hit(df, 'GE').groupby('created_at').mean()
+        ge_ticker_mean_df = symbols_hit(df, 'GE').groupby('created_at').mean().reset_index()
+        print(f'GE TICKER MEAN DF SHAPE =========== {ge_ticker_mean_df.shape}')
         return ge_ticker_mean_df
     else:
         ticker ='BTC'
-        btc_ticker_mean_df = symbols_hit(df,'BTC').groupby('created_at').mean()
+        btc_ticker_mean_df = symbols_hit(df,'BTC').groupby('created_at').mean().reset_index()
+        print(f'BTC TICKER MEAN DF SHAPE =========== {btc_ticker_mean_df.shape}')
         return btc_ticker_mean_df
 
 # def average_hashtag_of_tweets_per_day(df, ticker=''):
@@ -337,12 +350,96 @@ def convert_tickers(INTCclose,BYNDclose, GEclose, BTCclose):
 Merge ticker feature selected aggredated dataframe with target target dataframe created
 """
 def merge_ticker_with_target_dataframe(df_INTC, df_BYND, df_GE, df_BTC, intc_target_df, bynd_target_df, ge_target_df, btc_target_df):
+    # print(f'MERGE TICKER SHAPES ============ {df_INTC.shape}')
+    # print(f'MERGE TICKER SHAPES ============ {intc_target_df.shape}')
     INTC_df = pd.merge(df_INTC, intc_target_df,left_index=True,right_index=True)
+    print(f'INTC DF SHAPE =================== {INTC_df.shape}')
+
+
     BYND_df = pd.merge(df_BYND, bynd_target_df,left_index=True,right_index=True)
+
+    print(f'BYND DF SHAPE =================== {BYND_df.shape}')
+
+
     GE_df = pd.merge(df_GE, ge_target_df,left_index=True,right_index=True)
+    print(f'GE DF SHAPE =================== {GE_df.shape}')
+
     BTC_df = pd.merge(df_BTC, btc_target_df,left_index=True,right_index=True)
+    print(f'BTC DF SHAPE =================== {BTC_df.shape}')
 
     return INTC_df, BYND_df, GE_df, BTC_df
+
+def find_tickers(text):
+    return re.findall(r'[$][A-Za-z][\S]*', text)
+
+def get_live_tweets():
+    tweets_GE_list = []
+    tweets_BYND_list = []
+    tweets_INTC_list = []
+    tweets_BTC_list = []
+
+    tweets_GE = auth.api.search(q ="$GE", count = 1000)
+    tweets_BYND = auth.api.search(q ="$BYND", count = 1000)
+    tweets_INTC = auth.api.search(q ="$INTC", count = 1000)
+    tweets_BTC = auth.api.search(q ="$BTC", count = 1000)
+
+    json_data_GE = [r._json for r in tweets_GE]
+    json_data_BYND = [r._json for r in tweets_BYND]
+    json_data_BTC = [r._json for r in tweets_BTC]
+    json_data_INTC = [r._json for r in tweets_INTC]
+    # use cmnd key to highlight eveyrthing
+    for tweet in json_data_GE:
+        tweets_GE_list.append({'created_at': tweet['created_at'], 'full_text': tweet['text']})
+    for tweet in json_data_BYND:
+        tweets_BYND_list.append({'created_at': tweet['created_at'], 'full_text': tweet['text']})
+    for tweet in json_data_BTC:
+        tweets_BTC_list.append({'created_at': tweet['created_at'], 'full_text': tweet['text']})
+    for tweet in json_data_INTC:
+        tweets_INTC_list.append({'created_at': tweet['created_at'], 'full_text': tweet['text']})
+
+    concat_tweets = tweets_GE_list +  tweets_BYND_list + tweets_INTC_list + tweets_BTC_list
+    final_df = pd.DataFrame.from_dict(concat_tweets)
+    final_df['symbols'] = final_df['full_text'].apply(find_tickers)
+    final_df['symbols'] = final_df['symbols'].apply(remove_dollar)
+    return final_df
+
+def grab_live_tweets_to_vectorize(final_df):
+    df = final_df
+    df = clean_data(df)
+    df = custom_ohe(df)
+    df = impute(df)
+    df = fix_date_time(df)
+    df = remove_url(df)
+    df = concat_vectors(df)
+    df = df_to_datetime(df)
+    df_INTC = average_symbols_of_tweets_per_day(df, ticker='INTC')
+    df_INTC = df_INTC.set_index(['created_at'])
+    df_BYND= average_symbols_of_tweets_per_day(df, ticker='BYND')
+    df_BYND = df_BYND.set_index(['created_at'])
+    df_GE= average_symbols_of_tweets_per_day(df, ticker='GE')
+    df_GE = df_GE.set_index(['created_at'])
+    df_BTC = average_symbols_of_tweets_per_day(df, ticker='BTC')
+    df_BTC = df_BTC.set_index(['created_at'])
+
+    INTCclose, BYNDclose, GEclose, BTCclose = download_yahoo_stocks(tickers= 'INTC BYND GE BTC', period='6mo')
+    intc_target_df, bynd_target_df, ge_target_df, btc_target_df = convert_tickers(INTCclose, BYNDclose, GEclose, BTCclose)
+
+
+
+    # print(f'INTC TARGET SHAPE ========== {intc_target_df.shape}')
+    # print(f'BYND TARGET SHAPE ========== {bynd_target_df.shape}')
+
+# merge below
+    INTC_df, BYND_df, GE_df, BTC_df = merge_ticker_with_target_dataframe(
+                                        df_INTC, df_BYND, df_GE, df_BTC,
+                                        intc_target_df, bynd_target_df, ge_target_df, btc_target_df)
+    return INTC_df, BYND_df, GE_df, BTC_df
+
+    # print(INTC_df)
+    # print(BYND_df)
+    # print(GE_df)
+    # print(BTC_df)
+
 def grab_stocks(df):
     df = dftest
     df = grab_features(df)
@@ -383,10 +480,12 @@ def grab_stocks(df):
     INTC_df, BYND_df, GE_df, BTC_df = merge_ticker_with_target_dataframe(
                                         df_INTC, df_BYND, df_GE, df_BTC,
                                         intc_target_df, bynd_target_df, ge_target_df, btc_target_df)
-    print(INTC_df)
-    print(BYND_df)
-    print(GE_df)
-    print(BTC_df)
+    # print(INTC_df)
+    # print(BYND_df)
+    # print(GE_df)
+    # print(BTC_df)
 if __name__ == '__main__':
-    df = dftest
-    grab_stocks(df)
+    # df = dftest
+    # grab_stocks(df)
+    our_live_df = get_live_tweets()
+    ourlive_df = grab_live_tweets_to_vectorize(our_live_df)
