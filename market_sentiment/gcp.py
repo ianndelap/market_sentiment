@@ -50,7 +50,8 @@ def download_model(bucket=BUCKET_NAME):
     model = joblib.load('model.joblib')
     # return our model to be used to predict!
     return model
-prediction = download_model(bucket= BUCKET_NAME)
+# this guy underneath is causing this
+# prediction = download_model(bucket= BUCKET_NAME)
 
 if __name__ == '__main__':
     pass

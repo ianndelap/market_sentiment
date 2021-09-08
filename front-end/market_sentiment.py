@@ -15,7 +15,22 @@ from datetime import datetime
 market_url = "http://0.0.0.0:8001/deploy-stocks"
 
 
-st.title('Market Analysis Based Off Twitter Sentiment')
+st.markdown("""
+<style>
+.big-font {
+    font-size:50px !important;
+}
+.medium-font {
+    font-size:30px
+}
+</style>
+
+""", unsafe_allow_html=True)
+
+st.markdown('<p class="big-font">Market Analysis Based Off Twitter Sentiment</p>', unsafe_allow_html=True)
+
+
+# st.title('Market Analysis Based Off Twitter Sentiment')
 
 # the side bar that allows us to choose the tickers and essentially acts as params
 option = st.sidebar.selectbox(
@@ -26,6 +41,7 @@ time_stamps = st.sidebar.selectbox(
     'Choose a time',
      ['1d', '3mo', '6mo', '1y'])
 
+
 # our response to read our api
 response = requests.get(
     market_url,
@@ -35,12 +51,11 @@ response = requests.get(
 # load our dataframe
 df = pd.DataFrame({'Date': response['tickers'].keys(),'Price': response['tickers'].values()})
 # the metrics
-score, analysis = st.columns(2)
-
-score.metric("Stock Price",  df['Price'].iloc[-1], df['Price'].iloc[-2] - df['Price'].iloc[-1])
-analysis.metric("Sentiment", "Bullish", "+23%")
-
+st.metric("Sentiment", option, "+23%")
+# st.write(response)
 
 # load the line chart
 plotly_figure = px.line(df, x=df['Date'], y=df['Price'], title=f'You Selected ${option}')
 st.plotly_chart(plotly_figure)
+# the metrics
+st.metric("Stock Price",  df['Price'].iloc[-1], df['Price'].iloc[-2] - df['Price'].iloc[-1])
