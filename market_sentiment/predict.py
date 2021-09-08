@@ -11,9 +11,10 @@ from market_sentiment.gcp import prediction
 #     res = {'MAE': MAE, 'RMSE': RMSE}
 #     return res
 
-def predit_model(model):
-    y_predict = 'predicting our model'
-    print( y_predict)
+def predict_model(model, X_predict):
+    pass
+    # model = 'model.joblib'
+    # predicition = model.predict(X_predict)
 
 
 if __name__ == '__main__':
