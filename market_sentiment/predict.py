@@ -17,5 +17,6 @@ def predit_model(model):
 
 
 if __name__ == '__main__':
-   our_final_prediction =  predit_model(model= prediction)
-   print(our_final_prediction)
+#    our_final_prediction =  predit_model(model= prediction)
+#    print(our_final_prediction)
+    pass

@@ -152,3 +152,4 @@ Werkzeug==2.0.1
 widgetsnbextension==3.5.1
 wrapt==1.12.1
 yfinance==0.1.63
+tweepy==3.10.0
