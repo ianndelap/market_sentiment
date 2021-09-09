@@ -28,7 +28,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<p class="big-font">Market Analysis Based Off Twitter Sentiment</p>', unsafe_allow_html=True)
-
+original_title = '<p style="font-family:Courier; color:Blue; font-size: 20px;">Original image</p>'
+# st.markdown(original_title, unsafe_allow_html=True)
 
 # st.title('Market Analysis Based Off Twitter Sentiment')
 
@@ -39,7 +40,7 @@ option = st.sidebar.selectbox(
 
 time_stamps = st.sidebar.selectbox(
     'Choose a time',
-     ['1d', '3mo', '6mo', '1y'])
+     ['6mo', '3mo', '1d', '1y'])
 
 
 # our response to read our api
@@ -51,7 +52,9 @@ response = requests.get(
 # load our dataframe
 df = pd.DataFrame({'Date': response['tickers'].keys(),'Price': response['tickers'].values()})
 # the metrics
-st.metric("Sentiment", 'Bullish', "+23%")
+twitter_users = 'Twitter users agree to buy'
+
+st.metric("Sentiment Prediction", f'{response["predict"]}', f' {twitter_users} ' )
 # st.write(response)
 
 # load the line chart
