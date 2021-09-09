@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run market_sentiment.py
+web: sh setup.sh && streamlit run front_end/market_sentiment.py
