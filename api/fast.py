@@ -37,7 +37,7 @@ def get_stocks(ticker='GE', period = '6mo'):
     else:
         index = 1
         period = period
-    print(period)
+
     ticker_database = download_yahoo_stocks(tickers='INTC BYND GE BTC', period=period)
 
     df1 = (ticker_database[index]).where(pd.notnull(ticker_database[index]), 0)
@@ -46,15 +46,29 @@ def get_stocks(ticker='GE', period = '6mo'):
         '1': 'Twitter users are Bullish',
         '0': 'Twitter users are Bearish'
     }
+
     predict_INTC = int(predict_model('INTC')[0])
     predict_BTC = int(predict_model('BTC')[0])
     predict_GE = int(predict_model('GE')[0])
     if predict_GE == 1:
-        predict = messages['1']
+        prediction_GE = messages['1']
     else:
-        predict = messages['0']
+        prediction_GE = messages['0']
 
+    if predict_BTC == 1:
+        prediction_BTC = messages['1']
+    else:
+        prediction_BTC = messages['0']
 
+    if predict_INTC == 1:
+        prediction_INTC = messages['1']
+    else:
+        prediction_INTC = messages['0']
+
+    predict = { 'GE':prediction_GE,
+                'BTC' :prediction_BTC,
+                "INTC": prediction_INTC
+               }
     # if predict_BTC == 1:
     #     predict = 'Twitter users believe this is bullish'
     # elif predict_GE == 1:
@@ -62,5 +76,4 @@ def get_stocks(ticker='GE', period = '6mo'):
     # else:
     #     predict = 'Bearish, Twitter Users Agree to stay away from this stock'
 
-
-    return {'tickers': df1, 'predict': predict}
+    return {'tickers': df1, 'predict': predict }
