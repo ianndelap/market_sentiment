@@ -14,7 +14,6 @@ from datetime import datetime
 # tickers = yf.download(tickers = 'INTC BYND GE BTC', interval='1d', )
 market_url = "http://0.0.0.0:8001/deploy-stocks"
 
-
 st.markdown("""
 <style>
 .big-font {
@@ -28,12 +27,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<p class="big-font">Market Analysis Based Off Twitter Sentiment</p>', unsafe_allow_html=True)
-original_title = '<p style="font-family:Courier; color:Blue; font-size: 20px;">Original image</p>'
-# st.markdown(original_title, unsafe_allow_html=True)
+# original_title = '<p style="font-family:Courier; color:Blue; font-size: 20px;">Original image</p>'
 
-# st.title('Market Analysis Based Off Twitter Sentiment')
-
-# the side bar that allows us to choose the tickers and essentially acts as params
 option = st.sidebar.selectbox(
     'Choose a $Ticker',
      ['GE', 'BYND', 'INTC', 'BTC'])
@@ -54,9 +49,12 @@ df = pd.DataFrame({'Date': response['tickers'].keys(),'Price': response['tickers
 # the metrics
 twitter_users_bullish = 'Twitter users agree to buy'
 twitter_users_bearish = 'Twitter users agree to sell or stay away'
-if response['predict'] == 0:
-    st.metric("Sentiment Prediction", f'{response["predict"]}', f' -{twitter_users_bearish} ' )
-st.metric("Sentiment Prediction", f'{response["predict"]}', f' {twitter_users_bullish} ' )
+
+
+if response['predict'][option] == 'Twitter users are Bearish':
+    st.metric("Sentiment Prediction", f'{response["predict"][option]}', f'-{twitter_users_bearish}' )
+else:
+    st.metric("Sentiment Prediction", f'{response["predict"][option]}', f' {twitter_users_bullish} ' )
 
 # load the line chart
 plotly_figure = px.line(df, x=df['Date'], y=df['Price'], title=f'You Selected ${option}')
