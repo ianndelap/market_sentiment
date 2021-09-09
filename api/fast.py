@@ -44,20 +44,23 @@ def get_stocks(ticker='GE', period = '6mo'):
     # grab prediction model
     messages = {
         '1': 'Twitter users are Bullish',
-        '0': 'Bearish, Twitter Users Agree to stay away from this stock'
+        '0': 'Twitter users are Bearish'
     }
     predict_INTC = int(predict_model('INTC')[0])
     predict_BTC = int(predict_model('BTC')[0])
     predict_GE = int(predict_model('GE')[0])
-
-    if predict_INTC == 1:
+    if predict_GE == 1:
         predict = messages['1']
-    if predict_BTC == 1:
-        predict = 'Twitter users believe this is bullish'
-    elif predict_GE == 1:
-        predict = 'Bullish, Twitter Users Agree this Stock is promising'
     else:
-        predict = 'Bearish, Twitter Users Agree to stay away from this stock'
+        predict = messages['0']
+
+
+    # if predict_BTC == 1:
+    #     predict = 'Twitter users believe this is bullish'
+    # elif predict_GE == 1:
+    #     predict = 'Bullish, Twitter Users Agree this Stock is promising'
+    # else:
+    #     predict = 'Bearish, Twitter Users Agree to stay away from this stock'
 
 
     return {'tickers': df1, 'predict': predict}

@@ -53,7 +53,8 @@ response = requests.get(
 df = pd.DataFrame({'Date': response['tickers'].keys(),'Price': response['tickers'].values()})
 # the metrics
 twitter_users = 'Twitter users agree to buy'
-
+if response['predict'] == 1:
+    st.metric("Sentiment Prediction", f'{response["predict"]}', f' -{twitter_users} ' )
 st.metric("Sentiment Prediction", f'{response["predict"]}', f' {twitter_users} ' )
 # st.write(response)
 
