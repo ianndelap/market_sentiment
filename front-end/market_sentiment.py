@@ -52,22 +52,14 @@ response = requests.get(
 # load our dataframe
 df = pd.DataFrame({'Date': response['tickers'].keys(),'Price': response['tickers'].values()})
 # the metrics
-twitter_users = 'Twitter users agree to buy'
-if response['predict'] == 1:
-    st.metric("Sentiment Prediction", f'{response["predict"]}', f' -{twitter_users} ' )
-st.metric("Sentiment Prediction", f'{response["predict"]}', f' {twitter_users} ' )
-# st.write(response)
+twitter_users_bullish = 'Twitter users agree to buy'
+twitter_users_bearish = 'Twitter users agree to sell or stay away'
+if response['predict'] == 0:
+    st.metric("Sentiment Prediction", f'{response["predict"]}', f' -{twitter_users_bearish} ' )
+st.metric("Sentiment Prediction", f'{response["predict"]}', f' {twitter_users_bullish} ' )
 
 # load the line chart
 plotly_figure = px.line(df, x=df['Date'], y=df['Price'], title=f'You Selected ${option}')
 st.plotly_chart(plotly_figure)
 # the metrics
 st.metric("Stock Price",  df['Price'].iloc[-1], df['Price'].iloc[-1] - df['Price'].iloc[-2])
-# if df['Price'].iloc[-2] - df['Price'].iloc[-1]< 0:
-#     st.write('RED')
-# else:
-#     st.write('GREEN')
-# st.write( df['Price'].iloc[-2] - df['Price'].iloc[-1])
-
-# st.write(df['Price'].iloc[-2])
-# st.write(df['Price'].iloc[-1])
