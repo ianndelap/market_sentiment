@@ -1,23 +1,20 @@
-from market_sentiment.gcp import MODEL_NAME
-from market_sentiment.app import grab_stocks
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 from math import sqrt
-from market_sentiment.gcp import prediction
+import pandas as pd
+import joblib
 
-
-# def evaluate_model(y, y_pred):
-#     MAE = round(mean_absolute_error(y, y_pred), 2)
-#     RMSE = round(sqrt(mean_squared_error(y, y_pred)), 2)
-#     res = {'MAE': MAE, 'RMSE': RMSE}
-#     return res
-
-def predict_model(model, X_predict):
-    pass
-    # model = 'model.joblib'
-    # predicition = model.predict(X_predict)
-
+def predict_model(ticker):
+    model = joblib.load(f'model_{ticker}.joblib')
+    X_pred = f'X_pred_{ticker}.csv'
+    X_pred = pd.read_csv(X_pred, index_col=0)
+    # print(X_pred)
+    prediction = model.predict(X_pred)
+    return prediction
 
 if __name__ == '__main__':
-#    our_final_prediction =  predit_model(model= prediction)
-#    print(our_final_prediction)
     pass
+    # predict_BTC = predict_model('BTC')
+    # predict_GE = predict_model('GE')
+    # predict_INTC = predict_model('INTC')
+    # predict = predict_model("INTC")
+    # print(predict_BTC)
+    # print(type(predict_BTC))
