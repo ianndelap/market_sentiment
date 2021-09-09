@@ -86,4 +86,4 @@ upload_data:
 run_api:
 	uvicorn api.fast:app --reload  # load web server with code autoreload
 run_streamlit:
-    streamlit run market_sentiment.py
+    streamlit run front_end/market_sentiment.py
