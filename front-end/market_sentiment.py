@@ -12,7 +12,7 @@ from datetime import datetime
 # that are made in the api/fast.py. then response is grabbing this to be displayed. We call our respone[key] to output
 # the value.
 # tickers = yf.download(tickers = 'INTC BYND GE BTC', interval='1d', )
-market_url = "http://0.0.0.0:8001/deploy-stocks"
+market_url = "https://stock-market-yjz66r4l5a-ew.a.run.app/deploy-stocks"
 
 st.markdown("""
 <style>
