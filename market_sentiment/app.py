@@ -15,6 +15,9 @@ import tensorflow_text
 import datetime as dt
 import re
 import yfinance as yf
+import os
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="../credentials.json"
+
 
 # GCP = URL replace with mine
 # """Import Data
