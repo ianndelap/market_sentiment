@@ -120,6 +120,20 @@ def merge_ticker_with_target_dataframe(df, target_df):
 #   print(f'STOCK_DF SHAPE =================== {stock_df.shape}')
   return stock_df
 
+def ml_model(df):
+    X = df.drop(columns='Close')
+    y = df['Close']
+    # split our X and y into training and tests sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+    # instantiate the model --> open to changes on type of ML Algorithm
+    voting_classifier_soft = VotingClassifier(estimators = [
+        ('svc',SVC(probability=True)),
+        ('rf',RandomForestClassifier()),
+        ], voting='soft')
+    cv_scores = cross_validate(voting_classifier_soft,X,y,cv=4,scoring=['f1','accuracy'])
+    print(cv_scores)
+
+
 def master_function(ticker, dataframe):
     pass
 
@@ -133,4 +147,5 @@ if __name__ == '__main__':
     stock_price = download_yahoo_stocks(ticker, '6mo')
     stock_price = convert_tickers(stock_price)
     final_df = merge_ticker_with_target_dataframe(dataframe, stock_price)
-    print(final_df)
+    final_df_scores = ml_model(final_df)
+    print(final_df_scores)
