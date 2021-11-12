@@ -2,9 +2,11 @@
 canonical imports here
 """
 
-from market_sentiment.gcp import get_data_from_gcp
+# from market_sentiment.gcp import get_data_from_gcp
+from gcp import get_data_from_gcp
 from numpy.lib.ufunclike import fix
-from market_sentiment import auth
+# from market_sentiment import auth1
+import auth1
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
@@ -235,7 +237,7 @@ def embed_matrix(df):
 
 
 """
-concat the two dataframes one against another to create one single dataframe
+concat the two dataframes, the vector one and original one to single dataframe
 """
 def concat_vectors(df):
     df = pd.concat([df,embed_matrix(df)], axis=1, join="inner")
@@ -358,11 +360,9 @@ def merge_ticker_with_target_dataframe(df_INTC, df_BYND, df_GE, df_BTC, intc_tar
     INTC_df = pd.merge(df_INTC, intc_target_df,left_index=True,right_index=True)
     print(f'INTC DF SHAPE =================== {INTC_df.shape}')
 
-
     BYND_df = pd.merge(df_BYND, bynd_target_df,left_index=True,right_index=True)
 
     print(f'BYND DF SHAPE =================== {BYND_df.shape}')
-
 
     GE_df = pd.merge(df_GE, ge_target_df,left_index=True,right_index=True)
     print(f'GE DF SHAPE =================== {GE_df.shape}')
@@ -381,10 +381,10 @@ def get_live_tweets():
     tweets_INTC_list = []
     tweets_BTC_list = []
 
-    tweets_GE = auth.api.search(q ="$GE", count = 1000)
-    tweets_BYND = auth.api.search(q ="$BYND", count = 1000)
-    tweets_INTC = auth.api.search(q ="$INTC", count = 1000)
-    tweets_BTC = auth.api.search(q ="$BTC", count = 1000)
+    tweets_GE = auth1.api.search(q ="$GE", count = 1000)
+    tweets_BYND = auth1.api.search(q ="$BYND", count = 1000)
+    tweets_INTC = auth1.api.search(q ="$INTC", count = 1000)
+    tweets_BTC = auth1.api.search(q ="$BTC", count = 1000)
 
     json_data_GE = [r._json for r in tweets_GE]
     json_data_BYND = [r._json for r in tweets_BYND]

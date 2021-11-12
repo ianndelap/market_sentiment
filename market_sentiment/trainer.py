@@ -4,9 +4,8 @@
 # from sklearn.ensemble import  VotingClassifier
 # from market_sentiment import save_model
 
-
-# #mean_accuracy = cross_validate(voting_classifier_soft,X,y,cv=7,scoring=['f1','accuracy'])['test_accuracy'].mean()
-# #voting_classifier_soft.fit(X_train,y_train)
+# mean_accuracy = cross_validate(voting_classifier_soft,X,y,cv=7,scoring=['f1','accuracy'])['test_accuracy'].mean()
+# voting_classifier_soft.fit(X_train,y_train)
 
 
 # class Trainer(object):
