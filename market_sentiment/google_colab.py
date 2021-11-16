@@ -7,6 +7,17 @@ import tensorflow_text
 import re
 import yfinance as yf
 from yfinance import ticker
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier,VotingClassifier
+from sklearn.model_selection import train_test_split,cross_validate
+import joblib
+from sklearn.model_selection import GridSearchCV
 
 def replacen(x):
     return x.replace('\n','')
