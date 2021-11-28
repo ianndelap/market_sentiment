@@ -7,6 +7,17 @@ import tensorflow_text
 import re
 import yfinance as yf
 from yfinance import ticker
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier,VotingClassifier
+from sklearn.model_selection import train_test_split,cross_validate
+import joblib
+from sklearn.model_selection import GridSearchCV
 
 def replacen(x):
     return x.replace('\n','')
@@ -147,5 +158,5 @@ if __name__ == '__main__':
     stock_price = download_yahoo_stocks(ticker, '6mo')
     stock_price = convert_tickers(stock_price)
     final_df = merge_ticker_with_target_dataframe(dataframe, stock_price)
-    final_df_scores = ml_model(final_df)
-    print(final_df_scores)
+    # final_df_scores = ml_model(final_df)
+    print(final_df)
