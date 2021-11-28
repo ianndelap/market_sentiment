@@ -158,5 +158,5 @@ if __name__ == '__main__':
     stock_price = download_yahoo_stocks(ticker, '6mo')
     stock_price = convert_tickers(stock_price)
     final_df = merge_ticker_with_target_dataframe(dataframe, stock_price)
-    final_df_scores = ml_model(final_df)
-    print(final_df_scores)
+    # final_df_scores = ml_model(final_df)
+    print(final_df)
